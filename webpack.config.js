@@ -12,6 +12,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js'
     },
+    target: 'web',
     devServer: {
         contentBase: path.resolve(__dirname, 'public'),
         hot: true,
