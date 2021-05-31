@@ -5,17 +5,6 @@ import { theme } from './styles/theme'
 
 import Main from './main';
 
-enum Gender {
-	female = "female",
-	male = "male",
-	other = "other"
-}
-
-interface FormInput {
-	username: String;
-	gender: Gender;
-}
-
 function Index() {
 
 	return (

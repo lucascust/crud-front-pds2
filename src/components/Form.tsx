@@ -1,5 +1,8 @@
-import { Flex, Button, Stack, forwardRef, HStack, FormLabel, RadioGroup, Radio, useToast } from "@chakra-ui/react"
-import { ForwardRefRenderFunction } from "react";
+import { Flex, Button, Stack, forwardRef, HStack, FormLabel, RadioGroup, Radio, useToast,   Alert,
+	AlertIcon,
+	AlertTitle,
+	AlertDescription, CloseButton } from "@chakra-ui/react"
+import { ForwardRefRenderFunction, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -28,8 +31,7 @@ const FormSchema = yup.object().shape({
 	username: yup.string().required('Nome obrigatório'),
 	email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
 	password: yup.string().required('Senha obrigatória'),
-	gender: yup.string(),
-	birthdate: yup.date().required().min(new Date(1900, 1, 1)),
+	birthdate: yup.date().required('A data precisa ser no formato mm/dd/aaaa').min(new Date(1900, 1, 1)),
 	phone: yup.string()
 		.matches(
 			/^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}/
@@ -42,17 +44,50 @@ const FormBase: ForwardRefRenderFunction<HTMLInputElement, FormProps> = (
 	ref
 ) => {
 	const toast = useToast();	
-	const { register, handleSubmit } = useForm({
+	const { register, handleSubmit, formState } = useForm({
 		resolver: yupResolver(FormSchema)
 	})
 	const onSubmit: SubmitHandler<FormProps> = data => api.post("signup", data);
-    return (
+    
+	const { errors } = formState
+
+	const [ErrMessage, setErrMessage] = useState("");
+
+	useEffect(() => {
+		Object.keys(errors).forEach(err => {
+			console.log(errors[err].message);
+			setErrMessage(errors[err].message);
+		})
+
+
+	}, [errors])
+	
+	return (
+
             <Flex
 				w="100vw"
 				h="100vh"
 				align="center"
 				justify="center"
 			>
+			{!! ErrMessage && (
+				<Alert 
+					status="error"
+					pos="absolute"
+					top={0}
+					bgColor="red.300"
+					w="50%"
+				>
+					<AlertIcon />
+					<AlertTitle mr={2}>{ErrMessage}</AlertTitle>
+					<CloseButton 
+						position="absolute"
+						right="8px"
+						top="8px"
+						onClick={() => {setErrMessage('')}} 
+					/>
+				</Alert>)
+			}
 			<Flex 
 				as="form"
 				w="100%"

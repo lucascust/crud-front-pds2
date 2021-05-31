@@ -24,14 +24,12 @@ const userList = () => {
             const response = await api.post('');
             //console.log(response.data);
             setUsers(response.data);
-          
         }
+          
         getUsers();
- 
-        
-
     }, [])
-    console.log(users)
+
+    
     return (
 
         <Flex
