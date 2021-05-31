@@ -4,6 +4,11 @@ module.exports = {
         '@babel/preset-typescript',
         ['@babel/preset-react', {
             runtime: 'automatic'
+        }],
+    ],
+    plugins: [
+        ["@babel/transform-runtime", {
+          "regenerator": true
         }]
     ]
 }
