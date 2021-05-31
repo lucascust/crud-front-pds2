@@ -28,5 +28,5 @@ function Index() {
   }
   
 
-render(Index(), document.getElementById('form'))
+render(Index(), document.getElementById('root'))
 //render(App(), document.getElementById('root'))

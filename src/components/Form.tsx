@@ -1,7 +1,9 @@
 import { Flex, Button, Stack, forwardRef, HStack, FormLabel, RadioGroup, Radio, useToast } from "@chakra-ui/react"
 import { ForwardRefRenderFunction } from "react";
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from "react-router-dom";
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup';
 
 import { Input } from './Input';
 
@@ -22,21 +24,35 @@ interface FormProps{
 	birthdate: Date
 }
 
+const FormSchema = yup.object().shape({
+	username: yup.string().required('Nome obrigatório'),
+	email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
+	password: yup.string().required('Senha obrigatória'),
+	gender: yup.string(),
+	birthdate: yup.date().required().min(new Date(1900, 1, 1)),
+	phone: yup.string()
+		.matches(
+			/^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}/
+			, 'Telefone não é válido')
+		.required('Telefone Obrigatório')
+});
 
 const FormBase: ForwardRefRenderFunction<HTMLInputElement, FormProps> = (
 	{ ...rest },
 	ref
 ) => {
 	const toast = useToast();	
-	const { register, handleSubmit } = useForm<FormProps>();
+	const { register, handleSubmit } = useForm({
+		resolver: yupResolver(FormSchema)
+	})
 	const onSubmit: SubmitHandler<FormProps> = data => api.post("signup", data);
     return (
             <Flex
-			w="100vw"
-			h="100vh"
-			align="center"
-			justify="center"
-		>
+				w="100vw"
+				h="100vh"
+				align="center"
+				justify="center"
+			>
 			<Flex 
 				as="form"
 				w="100%"
